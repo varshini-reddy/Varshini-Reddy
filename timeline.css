@@ -1,0 +1,83 @@
+
+.timeline {
+    width: 80%;
+    position: relative;
+    perspective: 5000px;
+    left:10%;
+}
+.timeline:before {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 5px;
+    background-color: #383838;
+    border-radius: 15px;
+    top: 80px;
+}
+.timeline .timeline-item {
+    text-align: center;
+    position: relative;
+    left:10%;
+    right:10%;
+    z-index: 1;
+    cursor: pointer;
+}
+.timeline .timeline-item:hover:after {
+    transform: scale(1.5, 1.5);
+}
+.timeline .timeline-item.selected:after {
+    background-color: #56b7bb;
+    border: 2px solid #eae5e5;
+    transform: scale(1.5, 1.5);
+}
+.timeline .timeline-item:after {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 69px;
+    left: 50%;
+    background-color: #56b7bb;
+    border: 2px solid #eae5e5;
+    content: "";
+    border-radius: 50%;
+    transition: transform 0.5s ease;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+}
+.flex-items-default {
+    width: 224px;
+    height: 270px;
+}
+
+
+#tenth,#tweleveth,#be{
+    display: none;
+    margin-top:30%;
+    position:relative;
+    color:black;
+    font-size: 15px;
+    text-align:center;
+
+}
+
+
+
+#b10:hover #tenth {
+    display: block;
+
+}
+
+#b12:hover #tweleveth {
+    display: block;
+}
+
+#bbe:hover #be{
+    display: block;
+}
