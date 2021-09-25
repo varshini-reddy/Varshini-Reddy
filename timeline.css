@@ -1,6 +1,6 @@
 
 .timeline {
-    width: 80%;
+    width: 90%;
     position: relative;
     perspective: 5000px;
     left:10%;
@@ -59,7 +59,7 @@
 
 #tenth,#tweleveth,#be, #ms{
     display: none;
-    margin-top:30%;
+    margin-top:25%;
     position:relative;
     color:black;
     font-size: 15px;
