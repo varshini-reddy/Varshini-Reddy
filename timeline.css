@@ -57,7 +57,7 @@
 }
 
 
-#tenth,#tweleveth,#be{
+#tenth,#tweleveth,#be, #ms{
     display: none;
     margin-top:30%;
     position:relative;
@@ -79,5 +79,9 @@
 }
 
 #bbe:hover #be{
+    display: block;
+}
+
+#bms:hover #ms{
     display: block;
 }
