@@ -1,24 +1,24 @@
 .wrapper {
     position: relative;
-    top: 100%;
+    top: 130%;
     left: 50%;
-    width: 150%;
+    width: 170%;
     font-size: 0;
     transform: translate(-50%);
     text-align: center;
 }
 
 .letter {
-    padding: 0px 5px 0px 5px;
+    padding: 0px 15px 0px 5px;
     display: inline-block;
     vertical-align: middle;
     position: relative;
     overflow: hidden;
     margin: 0 0;
-    font-family: Quicksand;
-    font-size: 80px;
+    font-family: durerregular;
+    font-size: 110px;
     font-weight: 600;
-    line-height: 80px;
+    line-height: 100px;
     text-transform: uppercase;
     text-align: center;
 }
@@ -45,7 +45,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(2):before {
@@ -62,7 +62,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(3):before {
@@ -78,7 +78,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(4):before {
@@ -94,7 +94,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(5):before {
@@ -110,7 +110,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(6):before {
@@ -126,7 +126,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(7):before {
@@ -142,7 +142,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(8):before {
@@ -158,7 +158,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(9):before {
@@ -174,7 +174,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(10):before {
@@ -190,7 +190,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(11):before {
@@ -206,7 +206,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(12):before {
@@ -222,7 +222,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(13):before {
@@ -238,7 +238,7 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }
 .letter:nth-child(14):before {
@@ -254,6 +254,6 @@
         margin-top: -144px;
    }
     to {
-        margin-top: 80px;
+        margin-top: 100px;
    }
 }

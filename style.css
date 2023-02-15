@@ -11,6 +11,8 @@
 
 .extra { 
     display: none;
+	font-family: Gotu;
+	font-size:12px;
 }
 
 p:hover .extra {
@@ -30,6 +32,7 @@ p:hover .extra {
 #extra2{
 	font-size:15px;
 	font-weight: bold;
+	font-family:Gotu;
 
 }
 #extra2:hover{
