@@ -97,4 +97,3 @@ function hideDropDown() {
   $timelineItem.removeClass('selected');
   $dropDown.removeClass('bounceIn').addClass('fadeOut');
 }
-

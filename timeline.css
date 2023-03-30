@@ -2,16 +2,16 @@
 .timeline {
     width: 90%;
     position: relative;
-    perspective: 5000px;
+    perspective: 50%;
     left:10%;
 }
 .timeline:before {
     position: absolute;
     content: "";
     width: 100%;
-    height: 5px;
+    height: 1.5%;
     background-color: #383838;
-    border-radius: 15px;
+    border-radius: 15%;
     top: 80px;
 }
 .timeline .timeline-item {
@@ -22,14 +22,17 @@
     z-index: 1;
     cursor: pointer;
 }
+
 .timeline .timeline-item:hover:after {
     transform: scale(1.5, 1.5);
 }
+
 .timeline .timeline-item.selected:after {
     background-color: #56b7bb;
     border: 2px solid #eae5e5;
     transform: scale(1.5, 1.5);
 }
+
 .timeline .timeline-item:after {
     width: 30px;
     height: 30px;
@@ -43,27 +46,41 @@
     transition: transform 0.5s ease;
 }
 
+
+
 .flex-container {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-content: flex-start;
-    align-items: flex-start;
+    text-align:center;
 }
+
 .flex-items-default {
     width: 224px;
     height: 270px;
+    text-align:center;
 }
 
+.flex_content{
+    font-family: "Gotu";
+    /* position:absolute; */
+    position:relative;
+    color:black;
+    font-size: 125%;
+    text-align:center;
+    padding-left: 25%;
+    padding-bottom: 10%;
+    width :300%;
+}
 
-#tenth,#tweleveth,#be, #ms{
+#tenth, #twelfth,#be, #ms{
     display: none;
     margin-top:25%;
     position:relative;
     color:black;
-    font-size: 15px;
+    font-size: 125%;
     text-align:center;
+    padding-top: 15%;
+    padding-left: 25%;
+    width :150%;
 
 }
 
@@ -71,10 +88,9 @@
 
 #b10:hover #tenth {
     display: block;
-
 }
 
-#b12:hover #tweleveth {
+#b12:hover #twelfth {
     display: block;
 }
 
@@ -85,3 +101,4 @@
 #bms:hover #ms{
     display: block;
 }
+

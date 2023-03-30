@@ -1,12 +1,37 @@
 
 
+
 @font-face {
     font-family: 'durerregular';
-    src: url('durer-webfont.woff2') format('woff2'),
-         url('durer-webfont.woff') format('woff');
+    src: url('../fonts/durer-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 
+}
+
+@font-face {
+    font-family: 'Gotu';
+    src: url('../fonts/Gotu-Regular.ttf') format('ttf');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+.spacing {
+	display: flex;
+	color:black; 
+	font-size: 170%; 
+	font-family: Gotu;
+	justify-content: space-between;
+	padding-left: 20%;
+	padding-right: 20%;
+	padding-bottom: 15%;
+  }
+
+.tab {
+	tab-size: 30%;
 }
 
 hr.new1{
@@ -19,7 +44,7 @@ hr.new2{
 }
 hr.new3{
 	border: 1px solid #d1c826;
-	border-radius: 5px;
+	border-radius: 5%;
 }
 
 u{
@@ -35,7 +60,7 @@ u{
 }
 hr{
 	background-color: #b0acac;
-	height: 2px;
+	height: 2%;
 	width: 80%;
 }
 
@@ -43,9 +68,11 @@ body{
 	background-color: #eae5e5;
 	font-family: 'durerregular';
 	transition: all 0.5s ease;
+	overflow: hidden;
 }
 p{
 font-family: 'durerregular';
+overflow: hidden;
 }
 a{
 	text-decoration: none;
@@ -79,23 +106,25 @@ header{
 	background: #EAE5E5;
 }
 .home_text{
-	padding-top: 210px;
-	padding-bottom: 210px;
+	/* padding-top: 210px; */
+	padding-top: 20%;
+	padding-bottom: 20%;
+	/* padding-bottom: 210px; */
 }
 .home_text h2{
 	color: #010101;
-	font-size: 40px;
+	font-size: 40%;
 	text-transform: uppercase;
-	letter-spacing: 13px;
+	letter-spacing: 13%;
 }
 .home_text p{
 	color: #ea3455;
-	font-size: 14px;
+	font-size: 14%;
 	text-transform: uppercase;
 }
 .home_text img{}
 .scroll_down{
-	padding-bottom: 50px;
+	padding-bottom: 50%;
 }
 .scroll_down h4{
 	font-size: 12px;
@@ -105,14 +134,13 @@ header{
 	text-transform: uppercase;
 }
 
-
 /*Services*/
 .services{
 	padding-top: 16px;
 
 }
 .services .container{
-	border-bottom: 1px solid #ddd;
+	border-bottom: 5% solid #ddd;
 }
 .single_service{
 	padding-bottom: 96px;
@@ -160,24 +188,22 @@ header{
 	line-height: 21px;
 }
 .about_title h2{
-	font-size: 25px;
+	font-size: 230%;
 	color: #3d3d3d;
 	text-transform: uppercase;
-	margin-top: 85px;
-	letter-spacing: 6px;
-	margin-bottom: 21px;
+	margin-top: 20%;
+	letter-spacing: 6%;
+	margin-bottom: 2%;
 }
 .about_title img{
-	margin-bottom: 70px;
+	margin-bottom: 7%;
 }
 /*Testimonial*/
 .testimonial{
-		padding-top: 130px;
+	padding-top: 130px;
 	padding-bottom: 80px;
 }
-.testimonial{
 
-}
 .testimonial .icon:after{
 	content: "";
 	position: absolute;
@@ -230,7 +256,7 @@ padding-top: 110px;
 }
 .fun_facts .section_overlay{
 background: rgba(71,71,71,.8);
-padding-bottom: 30px;
+padding-bottom: 10%;
 }
 .single_count{
 padding-top: 120px;	
@@ -366,7 +392,7 @@ text-transform: uppercase;
 	font-weight: bold;
 }
 .left p{
-	margin-bottom: 60px;
+	margin-bottom: 20%;
 	font-size: 14px;
 	color: #000;
 }
@@ -509,3 +535,4 @@ letter-spacing: 0px;
 	font-weight:700;
 	text-decoration:none;
 	}
+
