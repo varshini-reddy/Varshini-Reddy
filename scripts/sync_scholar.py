@@ -1,40 +1,47 @@
 """
-Sync publications from Google Scholar into publications.json.
+Sync publications into publications.json.
 
-Google Scholar has no public API and blocks browser requests, so this cannot run
-in the page itself. Run it on a schedule (see .github/workflows/sync-scholar.yml)
-and commit the regenerated JSON.
+Google Scholar blocks datacenter IPs, so it cannot be scraped from GitHub
+Actions (scholarly raises MaxTriesExceededException). This script uses
+OpenAlex instead: an open catalogue with a public API, no key, no blocking.
+Citation counts differ slightly from Scholar's — OpenAlex counts only
+indexed sources.
 
-    pip install scholarly
     python scripts/sync_scholar.py
 
-Scholar merges authors with similar names. Anything whose title matches a string
-in EXCLUDE, or whose author list does not contain an ALIAS, is dropped.
+Set OPENALEX_AUTHOR_ID to pin a specific author record; otherwise the script
+searches by name and picks the profile with the most works.
+
+Safety: if the fetch returns fewer than MIN_WORKS entries, the script exits
+without writing, so a bad API day cannot wipe a good publications.json.
 """
 
-import json, re, datetime, pathlib
+import json, re, os, sys, datetime, pathlib, urllib.parse, urllib.request
 
-from scholarly import scholarly
-
-SCHOLAR_ID = "A6BwHbYAAAAJ"
 OUT = pathlib.Path(__file__).resolve().parent.parent / "publications.json"
+AUTHOR_NAME = "Varshini Reddy"
+AUTHOR_ID = os.environ.get("OPENALEX_AUTHOR_ID", "")
+MAILTO = os.environ.get("OPENALEX_MAILTO", "varshini.bogolu@kensho.com")
+MIN_WORKS = 10
+API = "https://api.openalex.org"
 
 # Papers by a different V. Reddy.
-EXCLUDE = [
-    "cobalt doped nickel ferrite",
-    "5g network optimization",
-]
+EXCLUDE = ["cobalt doped nickel ferrite", "5g network optimization"]
 
-ALIASES = ["V Reddy", "Varshini Reddy", "V. Reddy"]
+ALIASES = ["v reddy", "varshini reddy", "varshini bogolu", "v bogolu"]
 
-# Scholar reports the same work more than once (arXiv preprint + camera-ready).
-# Keys are normalised titles; the value is the title to keep.
+# Same work indexed twice (preprint + camera-ready). Keys are normalised
+# titles; values are the title to keep.
 CANONICAL = {
     "the effect of scripts and formats on llm numeracy":
         "1,729 vs. 1729: The effect of scripts and formats on LLM numeracy",
-    "are language model logits calibrated?":
-        "Language model probabilities are not calibrated in numeric contexts",
 }
+
+
+def get(url):
+    req = urllib.request.Request(url, headers={"User-Agent": f"portfolio-sync ({MAILTO})"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.load(r)
 
 
 def norm(t):
@@ -42,70 +49,98 @@ def norm(t):
 
 
 def initialise(name):
-    """'Charles W Schmidt' -> 'C. W. Schmidt'"""
-    parts = name.split()
+    """'Craig W Schmidt' -> 'C. W. Schmidt'"""
+    parts = [p for p in name.replace(".", "").split() if p]
     if len(parts) < 2:
         return name
     return " ".join(p[0] + "." for p in parts[:-1]) + " " + parts[-1]
 
 
-def format_authors(raw, limit=7):
-    names = [initialise(n.strip()) for n in raw.split(" and ")]
-    if len(names) > limit:
-        names = names[:limit] + ["et al."]
-    return ", ".join(names[:-1]) + (", " + names[-1] if len(names) > 1 else "")
+def format_authors(names, limit=7):
+    out = [initialise(n) for n in names]
+    if len(out) > limit:
+        out = out[:limit] + ["et al."]
+    return ", ".join(out)
 
 
-def format_venue(bib):
-    venue = bib.get("journal") or bib.get("booktitle") or bib.get("venue") or ""
-    year = bib.get("pub_year", "")
+def format_venue(w):
+    year = w.get("publication_year", "")
+    loc = (w.get("primary_location") or {}).get("source") or {}
+    venue = (loc.get("display_name") or "").strip()
     venue = re.sub(r"^Proceedings of (the )?", "", venue).strip()
     if not venue or "arxiv" in venue.lower():
-        eprint = bib.get("eprint", "")
-        venue = f"arXiv {eprint}" if eprint else "Preprint"
-    return f"{venue} \u00b7 {year}" if year and year not in venue else venue
+        ids = w.get("ids") or {}
+        doi = (ids.get("doi") or "")
+        m = re.search(r"arxiv\.(\d{4}\.\d{4,5})", doi)
+        venue = f"arXiv {m.group(1)}" if m else "Preprint"
+    return f"{venue} \u00b7 {year}" if year and str(year) not in venue else venue
+
+
+def resolve_author():
+    if AUTHOR_ID:
+        return AUTHOR_ID
+    q = urllib.parse.quote(AUTHOR_NAME)
+    data = get(f"{API}/authors?search={q}&per-page=25&mailto={MAILTO}")
+    cands = data.get("results", [])
+    if not cands:
+        sys.exit("no OpenAlex author found")
+    best = max(cands, key=lambda a: a.get("works_count", 0))
+    print(f"author: {best['display_name']} ({best['id']}, {best.get('works_count')} works)")
+    return best["id"].rsplit("/", 1)[-1]
 
 
 def main():
-    author = scholarly.fill(scholarly.search_author_id(SCHOLAR_ID), sections=["publications"])
+    aid = resolve_author()
+    rows, seen, cursor = [], {}, "*"
 
-    seen, rows = {}, []
-    for pub in author["publications"]:
-        bib = pub["bib"]
-        title = bib.get("title", "").strip()
-        key = norm(title)
-
-        if any(x in key for x in EXCLUDE):
-            continue
-
-        full = scholarly.fill(pub)
-        bib = full["bib"]
-        authors = bib.get("author", "")
-        if not any(a.lower() in authors.lower() for a in ALIASES):
-            continue
-
-        key = norm(CANONICAL.get(key, title))
-        cites = full.get("num_citations", 0)
-
-        if key in seen:  # keep the better-cited / better-venued copy
-            if cites <= seen[key]["cites"]:
+    while cursor:
+        url = (f"{API}/works?filter=author.id:{aid}&per-page=200"
+               f"&cursor={urllib.parse.quote(cursor)}&mailto={MAILTO}")
+        page = get(url)
+        for w in page.get("results", []):
+            title = (w.get("title") or "").strip()
+            if not title:
                 continue
-            rows = [r for r in rows if norm(r["title"]) != key]
+            key = norm(title)
+            if any(x in key for x in EXCLUDE):
+                continue
 
-        row = {
-            "title": CANONICAL.get(norm(title), title),
-            "authors": format_authors(authors),
-            "venue": format_venue(bib),
-            "cites": cites,
-            "url": full.get("pub_url") or full.get("eprint_url") or "",
-        }
-        seen[key] = row
-        rows.append(row)
+            names = [(a.get("author") or {}).get("display_name", "")
+                     for a in w.get("authorships", [])]
+            names = [n for n in names if n]
+            if not any(any(al in n.lower() for al in ALIASES) for n in names):
+                continue
+
+            canon = CANONICAL.get(key, title)
+            key = norm(canon)
+            cites = w.get("cited_by_count", 0)
+
+            if key in seen:
+                if cites <= seen[key]["cites"]:
+                    continue
+                rows = [r for r in rows if norm(r["title"]) != key]
+
+            ids = w.get("ids") or {}
+            row = {
+                "title": canon,
+                "authors": format_authors(names),
+                "venue": format_venue(w),
+                "cites": cites,
+                "url": ids.get("doi") or w.get("doi") or
+                       (w.get("primary_location") or {}).get("landing_page_url") or "",
+            }
+            seen[key] = row
+            rows.append(row)
+        cursor = (page.get("meta") or {}).get("next_cursor")
+
+    if len(rows) < MIN_WORKS:
+        sys.exit(f"only {len(rows)} works returned (need {MIN_WORKS}); leaving "
+                 f"publications.json untouched")
 
     rows.sort(key=lambda r: -r["cites"])
 
     OUT.write_text(json.dumps({
-        "_comment": "Generated by scripts/sync_scholar.py. Sorted by citations, descending.",
+        "_comment": "Generated by scripts/sync_scholar.py from OpenAlex. Sorted by citations, descending.",
         "updated": datetime.date.today().isoformat(),
         "publications": rows,
     }, indent=2, ensure_ascii=False) + "\n")

@@ -1,4 +1,4 @@
-name: Sync publications from Google Scholar
+name: Sync publications
 
 on:
   schedule:
@@ -15,12 +15,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install scholarly
-      - run: python scripts/sync_scholar.py
+      - name: Fetch from OpenAlex
+        run: python scripts/sync_scholar.py
       - name: Commit if changed
         run: |
-          git config user.name "scholar-sync"
+          git config user.name "publication-sync"
           git config user.email "actions@github.com"
           git add publications.json
-          git diff --staged --quiet || git commit -m "Sync publications from Google Scholar"
+          git diff --staged --quiet || git commit -m "Sync publications"
           git push
